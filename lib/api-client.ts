@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL || "https://gljs1111-8000.asse.devtunnels.ms"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://gljs1111-8000.asse.devtunnels.ms"
 
 export interface ApiProduct {
   id: string
