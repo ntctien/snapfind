@@ -30,23 +30,47 @@ interface ProductFiltersProps {
   isLoading?: boolean;
 }
 
-const COLOR_MAP: Record<string, string> = {
+const COLOR_MAP: Record<string, string> = { 
+  Beige: "#F5F5DC",
   Black: "#000000",
-  White: "#FFFFFF",
   Blue: "#0066CC",
-  Red: "#CC0000",
+  Bronze: "#CD7F32",
+  Brown: "#8B4513",
+  Charcoal: "#36454F",
+  Copper: "#B87333",
+  Cream: "#FFFDD0",
+  Gold: "#FFD700",
   Green: "#00CC00",
-  Gray: "#808080",
   Grey: "#808080",
-  Yellow: "#FFCC00",
+  "Grey Melange": "#A9A9A9",
+  Khaki: "#F0E68C",
+  Lavender: "#E6E6FA",
+  "Lime Green": "#32CD32",
+  Magenta: "#FF00FF",
+  Maroon: "#800000",
+  Multi: "#CCCCCC",
+  "Mushroom Brown": "#B19975",
+  Mustard: "#FFDB58",
+  "Navy Blue": "#000080",
+  Nude: "#FAD6BF",
+  "Off White": "#FAF9F6",
+  Olive: "#808000",
+  Orange: "#FF8C00",
+  Peach: "#FFE5B4",
   Pink: "#FF69B4",
   Purple: "#800080",
-  Orange: "#FF8C00",
-  Brown: "#8B4513",
-  Navy: "#000080",
-  Beige: "#F5F5DC",
+  Red: "#CC0000",
+  Rust: "#B7410E",
+  "Sea Green": "#2E8B57",
   Silver: "#C0C0C0",
-  Gold: "#FFD700",
+  Tan: "#D2B48C",
+  Taupe: "#483C32",
+  Teal: "#008080",
+  "Turquoise Blue": "#00CED1",
+  White: "#FFFFFF",
+  Yellow: "#FFCC00",
+  Gray: "#808080",
+  Navy: "#000080"
 };
 
 export function ProductFilters({
@@ -252,11 +276,7 @@ export function ProductFilters({
                 <SelectItem value="all">Tất cả</SelectItem>
                 {genders.map((gender) => (
                   <SelectItem key={gender} value={gender}>
-                    {gender === "Men"
-                      ? "Nam"
-                      : gender === "Women"
-                      ? "Nữ"
-                      : "Unisex"}
+                    {gender}
                   </SelectItem>
                 ))}
               </SelectContent>
