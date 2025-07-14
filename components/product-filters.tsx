@@ -151,7 +151,7 @@ export function ProductFilters({
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center space-x-3">
             <Filter className="h-5 w-5" />
-            <span className="text-xl">Bộ lọc</span>
+            <span className="lg:text-xl text-base">Bộ lọc</span>
             {activeFiltersCount > 0 && (
               <Badge variant="secondary">{activeFiltersCount}</Badge>
             )}

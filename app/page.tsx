@@ -1,18 +1,41 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Search, Mic, Camera, ShoppingCart, Star, SlidersHorizontal } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
-import { VoiceSearch } from "@/components/voice-search"
-import { ImageSearch } from "@/components/image-search"
-import { ProductModal } from "@/components/product-modal"
-import { ProductFilters } from "@/components/product-filters"
-import { apiClient, type ApiProduct, type ProductFilters as FilterType } from "@/lib/api-client"
+import { useState, useEffect } from "react";
+import {
+  Search,
+  Mic,
+  Camera,
+  ShoppingCart,
+  Star,
+  SlidersHorizontal,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { VoiceSearch } from "@/components/voice-search";
+import { ImageSearch } from "@/components/image-search";
+import { ProductModal } from "@/components/product-modal";
+import { ProductFilters } from "@/components/product-filters";
+import {
+  apiClient,
+  type ApiProduct,
+  type ProductFilters as FilterType,
+} from "@/lib/api-client";
 
 // Convert API product to our internal format
 const convertApiProduct = (apiProduct: ApiProduct) => ({
@@ -25,17 +48,23 @@ const convertApiProduct = (apiProduct: ApiProduct) => ({
   brand: apiProduct.category || "Unknown",
   rating: 4.5, // Default rating since API doesn't provide it
   reviews: Math.floor(Math.random() * 1000) + 100, // Mock reviews
-  tags: [apiProduct.category, apiProduct.product_type, apiProduct.colour].filter(Boolean) as string[],
-})
+  tags: [
+    apiProduct.category,
+    apiProduct.product_type,
+    apiProduct.colour,
+  ].filter(Boolean) as string[],
+});
 
 export default function EcommercePage() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [products, setProducts] = useState<ApiProduct[]>([])
-  const [loading, setLoading] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState<any | null>(null)
-  const [isVoiceSearchOpen, setIsVoiceSearchOpen] = useState(false)
-  const [isImageSearchOpen, setIsImageSearchOpen] = useState(false)
-  const [searchMode, setSearchMode] = useState<"text" | "voice" | "image">("text")
+  const [searchQuery, setSearchQuery] = useState("");
+  const [products, setProducts] = useState<ApiProduct[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+  const [isVoiceSearchOpen, setIsVoiceSearchOpen] = useState(false);
+  const [isImageSearchOpen, setIsImageSearchOpen] = useState(false);
+  const [searchMode, setSearchMode] = useState<"text" | "voice" | "image">(
+    "text"
+  );
   const [pagination, setPagination] = useState({
     page: 1,
     page_size: 20,
@@ -43,45 +72,49 @@ export default function EcommercePage() {
     total_pages: 0,
     has_next: false,
     has_previous: false,
-  })
+  });
   const [filters, setFilters] = useState<FilterType>({
     page: 1,
     page_size: 20,
     sort_by: "name",
     sort_order: "asc",
-  })
+  });
 
   const loadProducts = async (newFilters: FilterType = filters) => {
-    setLoading(true)
+    setLoading(true);
     try {
-      const response = await apiClient.getProducts(newFilters)
-      setProducts(response.products)
-      setPagination(response.pagination)
+      const response = await apiClient.getProducts(newFilters);
+      setProducts(response.products);
+      setPagination(response.pagination);
     } catch (error) {
-      console.error("Failed to load products:", error)
+      console.error("Failed to load products:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    loadProducts()
-  }, [])
+    loadProducts();
+  }, []);
 
   useEffect(() => {
     const delayedSearch = setTimeout(() => {
-      const newFilters = { ...filters, search: searchQuery || undefined, page: 1 }
-      setFilters(newFilters)
-      loadProducts(newFilters)
-    }, 500)
+      const newFilters = {
+        ...filters,
+        search: searchQuery || undefined,
+        page: 1,
+      };
+      setFilters(newFilters);
+      loadProducts(newFilters);
+    }, 500);
 
-    return () => clearTimeout(delayedSearch)
-  }, [searchQuery])
+    return () => clearTimeout(delayedSearch);
+  }, [searchQuery]);
 
   const handleFiltersChange = (newFilters: FilterType) => {
-    setFilters(newFilters)
-    loadProducts(newFilters)
-  }
+    setFilters(newFilters);
+    loadProducts(newFilters);
+  };
 
   const handleClearFilters = () => {
     const clearedFilters: FilterType = {
@@ -89,26 +122,26 @@ export default function EcommercePage() {
       page_size: 20,
       sort_by: "name",
       sort_order: "asc",
-    }
-    setFilters(clearedFilters)
-    setSearchQuery("")
-    loadProducts(clearedFilters)
-  }
+    };
+    setFilters(clearedFilters);
+    setSearchQuery("");
+    loadProducts(clearedFilters);
+  };
 
   const handleVoiceSearch = (transcript: string) => {
-    setSearchQuery(transcript)
-    setSearchMode("voice")
-    setIsVoiceSearchOpen(false)
-  }
+    setSearchQuery(transcript);
+    setSearchMode("voice");
+    setIsVoiceSearchOpen(false);
+  };
 
   const handleImageSearch = async (imageFile: File) => {
     try {
-      setLoading(true)
-      const results = await apiClient.searchByImage(imageFile)
-      setProducts(results)
-      setSearchMode("image")
-      setIsImageSearchOpen(false)
-      setSearchQuery(`Tìm kiếm bằng hình ảnh: ${imageFile.name}`)
+      setLoading(true);
+      const results = await apiClient.searchByImage(imageFile);
+      setProducts(results);
+      setSearchMode("image");
+      setIsImageSearchOpen(false);
+      // setSearchQuery(`Tìm kiếm bằng hình ảnh: ${imageFile.name}`)
       // Reset pagination for image search
       setPagination({
         page: 1,
@@ -117,26 +150,29 @@ export default function EcommercePage() {
         total_pages: 1,
         has_next: false,
         has_previous: false,
-      })
+      });
     } catch (error) {
-      console.error("Image search error:", error)
+      console.error("Image search error:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleSortChange = (sortValue: string) => {
-    const [sort_by, sort_order] = sortValue.split("-") as [string, "asc" | "desc"]
-    const newFilters = { ...filters, sort_by, sort_order, page: 1 }
-    setFilters(newFilters)
-    loadProducts(newFilters)
-  }
+    const [sort_by, sort_order] = sortValue.split("-") as [
+      string,
+      "asc" | "desc"
+    ];
+    const newFilters = { ...filters, sort_by, sort_order, page: 1 };
+    setFilters(newFilters);
+    loadProducts(newFilters);
+  };
 
   const handlePageChange = (newPage: number) => {
-    const newFilters = { ...filters, page: newPage }
-    setFilters(newFilters)
-    loadProducts(newFilters)
-  }
+    const newFilters = { ...filters, page: newPage };
+    setFilters(newFilters);
+    loadProducts(newFilters);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -146,7 +182,7 @@ export default function EcommercePage() {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
               <h1 className="text-2xl font-bold text-gray-900">SnapFind</h1>
-              <Badge variant="secondary">AI-Powered Search</Badge>
+              <Badge variant="secondary" className="hidden lg:block">AI-Powered Search</Badge>
             </div>
             <div className="flex items-center space-x-4">
               <Button variant="outline" size="sm">
@@ -173,19 +209,31 @@ export default function EcommercePage() {
                   className="pl-10 pr-4 py-2 w-full"
                 />
               </div>
-              <Button variant="outline" size="icon" onClick={() => setIsVoiceSearchOpen(true)} className="shrink-0">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setIsVoiceSearchOpen(true)}
+                className="shrink-0"
+              >
                 <Mic className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="icon" onClick={() => setIsImageSearchOpen(true)} className="shrink-0">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => setIsImageSearchOpen(true)}
+                className="shrink-0"
+              >
                 <Camera className="h-4 w-4" />
               </Button>
             </div>
 
             {/* Search Mode Indicator */}
-            <div className="flex items-center justify-between text-sm text-gray-600">
+            <div className="flex items-center justify-between text-sm text-gray-600 flex-wrap gap-4">
               <div className="flex items-center space-x-2">
                 <span>Chế độ tìm kiếm:</span>
-                <Badge variant={searchMode === "text" ? "default" : "secondary"}>
+                <Badge
+                  variant={searchMode === "text" ? "default" : "secondary"}
+                >
                   {searchMode === "text" && "Văn bản"}
                   {searchMode === "voice" && "Giọng nói"}
                   {searchMode === "image" && "Hình ảnh"}
@@ -194,7 +242,10 @@ export default function EcommercePage() {
                 <span>{pagination.total_items} sản phẩm</span>
               </div>
 
-              <Select value={`${filters.sort_by}-${filters.sort_order}`} onValueChange={handleSortChange}>
+              <Select
+                value={`${filters.sort_by}-${filters.sort_order}`}
+                onValueChange={handleSortChange}
+              >
                 <SelectTrigger className="w-48">
                   <SelectValue placeholder="Sắp xếp theo" />
                 </SelectTrigger>
@@ -229,7 +280,10 @@ export default function EcommercePage() {
           <div className="lg:hidden">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" className="w-full mb-4 bg-transparent">
+                <Button
+                  variant="outline"
+                  className="w-full mb-4 bg-transparent"
+                >
                   <SlidersHorizontal className="h-4 w-4 mr-2" />
                   Bộ lọc
                 </Button>
@@ -273,38 +327,56 @@ export default function EcommercePage() {
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                   {products.map((product) => {
-                    const convertedProduct = convertApiProduct(product)
+                    const convertedProduct = convertApiProduct(product);
                     return (
-                      <Card key={product.id} className="group cursor-pointer hover:shadow-lg transition-shadow">
+                      <Card
+                        key={product.id}
+                        className="group cursor-pointer hover:shadow-lg transition-shadow"
+                      >
                         <CardContent className="p-0">
                           <div className="aspect-square relative overflow-hidden rounded-t-lg">
                             <img
                               src={product.image_url || "/placeholder.svg"}
                               alt={product.name}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-                              onClick={() => setSelectedProduct(convertedProduct)}
+                              onClick={() =>
+                                setSelectedProduct(convertedProduct)
+                              }
                             />
-                            {!product.in_stock && <Badge className="absolute top-2 left-2 bg-red-500">Hết hàng</Badge>}
+                            {!product.in_stock && (
+                              <Badge className="absolute top-2 left-2 bg-red-500">
+                                Hết hàng
+                              </Badge>
+                            )}
                             {product.similarity_score && (
                               <Badge className="absolute top-2 right-2 bg-blue-500">
-                                {Math.round(product.similarity_score * 100)}% khớp
+                                {Math.round(product.similarity_score * 100)}%
+                                khớp
                               </Badge>
                             )}
                           </div>
                         </CardContent>
                         <CardFooter className="p-4">
                           <div className="w-full">
-                            <h3 className="font-semibold text-sm mb-2 line-clamp-2">{product.name}</h3>
+                            <h3 className="font-semibold text-sm mb-2 line-clamp-2">
+                              {product.name}
+                            </h3>
                             <div className="flex items-center mb-2">
                               <div className="flex items-center">
                                 {[...Array(5)].map((_, i) => (
                                   <Star
                                     key={i}
-                                    className={`h-3 w-3 ${i < 4 ? "text-yellow-400 fill-current" : "text-gray-300"}`}
+                                    className={`h-3 w-3 ${
+                                      i < 4
+                                        ? "text-yellow-400 fill-current"
+                                        : "text-gray-300"
+                                    }`}
                                   />
                                 ))}
                               </div>
-                              <span className="text-xs text-gray-600 ml-1">(100+)</span>
+                              <span className="text-xs text-gray-600 ml-1">
+                                (100+)
+                              </span>
                             </div>
                             <div className="flex items-center justify-between mb-2">
                               <span className="font-bold text-lg text-red-600">
@@ -326,7 +398,9 @@ export default function EcommercePage() {
                             <Button
                               className="w-full"
                               size="sm"
-                              onClick={() => setSelectedProduct(convertedProduct)}
+                              onClick={() =>
+                                setSelectedProduct(convertedProduct)
+                              }
                               disabled={!product.in_stock}
                             >
                               {product.in_stock ? "Xem chi tiết" : "Hết hàng"}
@@ -334,7 +408,7 @@ export default function EcommercePage() {
                           </div>
                         </CardFooter>
                       </Card>
-                    )
+                    );
                   })}
                 </div>
 
@@ -350,21 +424,27 @@ export default function EcommercePage() {
                     </Button>
 
                     <div className="flex items-center space-x-1">
-                      {[...Array(Math.min(5, pagination.total_pages))].map((_, i) => {
-                        const pageNum = Math.max(1, pagination.page - 2) + i
-                        if (pageNum > pagination.total_pages) return null
+                      {[...Array(Math.min(5, pagination.total_pages))].map(
+                        (_, i) => {
+                          const pageNum = Math.max(1, pagination.page - 2) + i;
+                          if (pageNum > pagination.total_pages) return null;
 
-                        return (
-                          <Button
-                            key={pageNum}
-                            variant={pageNum === pagination.page ? "default" : "outline"}
-                            size="sm"
-                            onClick={() => handlePageChange(pageNum)}
-                          >
-                            {pageNum}
-                          </Button>
-                        )
-                      })}
+                          return (
+                            <Button
+                              key={pageNum}
+                              variant={
+                                pageNum === pagination.page
+                                  ? "default"
+                                  : "outline"
+                              }
+                              size="sm"
+                              onClick={() => handlePageChange(pageNum)}
+                            >
+                              {pageNum}
+                            </Button>
+                          );
+                        }
+                      )}
                     </div>
 
                     <Button
@@ -382,7 +462,9 @@ export default function EcommercePage() {
                 <div className="text-gray-500 mb-4">
                   <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
                   <p className="text-lg">Không tìm thấy sản phẩm nào</p>
-                  <p className="text-sm">Thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm</p>
+                  <p className="text-sm">
+                    Thử điều chỉnh bộ lọc hoặc từ khóa tìm kiếm
+                  </p>
                 </div>
               </div>
             )}
@@ -406,8 +488,12 @@ export default function EcommercePage() {
 
       {/* Product Detail Modal */}
       {selectedProduct && (
-        <ProductModal product={selectedProduct} isOpen={!!selectedProduct} onClose={() => setSelectedProduct(null)} />
+        <ProductModal
+          product={selectedProduct}
+          isOpen={!!selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
       )}
     </div>
-  )
+  );
 }
