@@ -113,7 +113,7 @@ export function VoiceSearch({ isOpen, onClose, onResult }: VoiceSearchProps) {
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-4">
+        <div className="space-y-4 mt-2">
           {error && (
             <Card className="border-red-200 bg-red-50">
               <CardContent className="p-4">
