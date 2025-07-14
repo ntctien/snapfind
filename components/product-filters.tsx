@@ -30,7 +30,7 @@ interface ProductFiltersProps {
   isLoading?: boolean;
 }
 
-const COLOR_MAP: Record<string, string> = { 
+const COLOR_MAP: Record<string, string> = {
   Beige: "#F5F5DC",
   Black: "#000000",
   Blue: "#0066CC",
@@ -70,7 +70,7 @@ const COLOR_MAP: Record<string, string> = {
   White: "#FFFFFF",
   Yellow: "#FFCC00",
   Gray: "#808080",
-  Navy: "#000080"
+  Navy: "#000080",
 };
 
 export function ProductFilters({
@@ -147,7 +147,7 @@ export function ProductFilters({
 
   return (
     <Card className="w-full">
-      <CardHeader className="pb-4">
+      <CardHeader className="py-4 xl:py-6">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center space-x-3">
             <Filter className="h-5 w-5" />
@@ -158,7 +158,7 @@ export function ProductFilters({
           </CardTitle>
           <div className="flex items-center space-x-2">
             {activeFiltersCount > 0 && (
-              <Button variant="ghost" size="sm" onClick={onClearFilters}>
+              <Button variant="ghost" size="sm" className="hidden lg:flex" onClick={onClearFilters}>
                 <X className="h-4 w-4 mr-1" />
                 Xóa tất cả
               </Button>
@@ -177,6 +177,12 @@ export function ProductFilters({
             </Button>
           </div>
         </div>
+        {activeFiltersCount > 0 && (
+          <Button variant="ghost" size="sm" className="lg:hidden justify-start px-0" onClick={onClearFilters}>
+            <X className="h-4 w-4 mr-1" />
+            Xóa tất cả
+          </Button>
+        )}
       </CardHeader>
 
       <CardContent
