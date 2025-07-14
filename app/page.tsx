@@ -288,7 +288,7 @@ export default function EcommercePage() {
                   Bộ lọc
                 </Button>
               </SheetTrigger>
-              <SheetContent side="left" className="w-80">
+              <SheetContent side="left" className="w-[80%] max-h-screen overflow-auto">
                 <SheetHeader>
                   <SheetTitle>Bộ lọc sản phẩm</SheetTitle>
                 </SheetHeader>
